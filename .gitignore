@@ -1,3 +1,5 @@
 media-processor
 media-processor.exe
 *.env.local
+stack.env
+.env
