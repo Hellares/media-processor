@@ -1,0 +1,43 @@
+# ===========================================
+# 🎬 DOCKER COMPOSE - MEDIA PROCESSOR
+# Microservicio de procesamiento de imágenes y videos
+# ===========================================
+
+version: '3.8'
+
+services:
+  media-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: media-processor
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - stack.env
+    networks:
+      - elastika-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '2'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  elastika-network:
+    external: true
+    name: elastika-network
