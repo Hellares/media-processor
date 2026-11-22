@@ -1,0 +1,26 @@
+# Publica la imagen en ghcr.io al subir una etiqueta de versión (p. ej. 1.0.0).
+name: Publicar imagen
+
+on:
+  push:
+    tags: ['[0-9]*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  imagen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/hellares/media-processor:${{ github.ref_name }}
